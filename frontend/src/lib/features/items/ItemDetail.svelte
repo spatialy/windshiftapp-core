@@ -17,6 +17,10 @@
   import { publicBaseURL } from '../../runtime/contextPath.js';
   import { workspacePermissions } from '../../stores/workspacePermissions.svelte.js';
   import { itemDetailStore } from '../../stores/itemDetailStore.svelte.js';
+  import { extensions, ensureExtensionsLoaded, getItemActions, itemActionUrl } from '../../stores/extensions.svelte.js';
+  import { resolvePluginIcon } from '../../utils/pluginIcons.js';
+  import { toExternal } from '../../runtime/contextPath.js';
+  import IconPuzzle from '@tabler/icons-svelte-runes/icons/puzzle';
   import { timeLogStore } from '../../stores/timeLogStore.svelte.js';
   import { t } from '../../stores/i18n.svelte.js';
   import { getShortcut, matchesShortcut, isTypingInField } from '../../utils/keyboardShortcuts.js';
@@ -904,6 +908,14 @@ import NativeSelect from '../../components/NativeSelect.svelte';
     }
   }
 
+  function openItemAction(action) {
+    const id = itemDetailStore.item?.id;
+    if (!id) return;
+    const url = toExternal(itemActionUrl(action, id));
+    const popup = window.open(url, `windshift-item-action-${action.pluginName}-${action.id}`, 'popup,width=560,height=720');
+    if (!popup) showError(action.label, t('items.pluginActionPopupBlocked'));
+  }
+
   function populateDropdownItems() {
     if (!itemDetailStore.item) return;
 
@@ -925,6 +937,22 @@ import NativeSelect from '../../components/NativeSelect.svelte';
         onClick: toggleWatch
       }
     ];
+
+    // Plugin item actions (item.action extension point). Each opens the
+    // plugin's page in a popup with only the item id; the page reads the item
+    // through the REST API under the user's own session.
+    const pluginActions = untrack(() => getItemActions(extensions.value));
+    for (const action of pluginActions) {
+      items.push({
+        id: `plugin-action-${action.pluginName}-${action.id}`,
+        testid: `item-plugin-action-${action.id}`,
+        type: 'regular',
+        icon: resolvePluginIcon(action.icon, IconPuzzle),
+        title: action.label,
+        subtitle: action.description,
+        onClick: () => openItemAction(action)
+      });
+    }
 
     // Use untrack to prevent creating reactive dependency that could cause infinite loops
     const canEdit = untrack(() => workspacePermissions.canEdit(workspaceId));
@@ -1120,6 +1148,8 @@ import NativeSelect from '../../components/NativeSelect.svelte';
   }
 
   onMount(async () => {
+    // Plugin item actions join the menu once the extension registry loads.
+    void ensureExtensionsLoaded().then(() => populateDropdownItems());
     await loadData();
 
     // Register context-sensitive commands for this item

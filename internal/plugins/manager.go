@@ -280,9 +280,9 @@ func (m *Manager) LoadPlugin(pluginPath string) error {
 	}
 	manifest.Permissions = normalizedPermissions
 
-	// Validate editor-provider extensions before compilation so a malformed
-	// manifest fails the load with the offending value.
-	if err = normalizeEditorExtensions(manifest.Extensions); err != nil {
+	// Validate editor-provider and item-action extensions before compilation so
+	// a malformed manifest fails the load with the offending value.
+	if err = normalizeExtensions(manifest.Extensions); err != nil {
 		return fmt.Errorf("invalid plugin extensions: %w", err)
 	}
 
@@ -347,9 +347,9 @@ func (m *Manager) LoadPlugin(pluginPath string) error {
 		plugin.Extensions = attachPluginName(manifest.Name, manifest.Extensions, nil)
 	}
 
-	// get_metadata can add editor providers the manifest did not declare, so
-	// validate the resolved set as well.
-	if err := normalizeEditorExtensions(plugin.Extensions); err != nil {
+	// get_metadata can add editor providers or item actions the manifest did not
+	// declare, so validate the resolved set as well.
+	if err := normalizeExtensions(plugin.Extensions); err != nil {
 		return fmt.Errorf("invalid plugin extensions: %w", err)
 	}
 
@@ -1205,6 +1205,54 @@ func normalizePluginRoutes(routes []Route, allowPublic bool) ([]Route, error) {
 		}
 	}
 	return normalized, nil
+}
+
+// normalizeExtensions validates every extension point that carries its own
+// contract. Points without one pass through unchanged.
+func normalizeExtensions(extensions []Extension) error {
+	if err := normalizeEditorExtensions(extensions); err != nil {
+		return err
+	}
+	return validateItemActionExtensions(extensions)
+}
+
+// validateItemActionExtensions checks item.action extensions. The host opens
+// the component as /api/plugins/{name}/assets/{component}?item_id=..., so the
+// component must be a plain relative asset path: no scheme, no leading slash,
+// no traversal, and no query or fragment of its own.
+func validateItemActionExtensions(extensions []Extension) error {
+	for i := range extensions {
+		ext := &extensions[i]
+		if ext.Point != ExtensionPointItemAction {
+			continue
+		}
+		if strings.TrimSpace(ext.Label) == "" {
+			return fmt.Errorf("item.action extension %q: label is required", ext.ID)
+		}
+		component := strings.TrimSpace(ext.Component)
+		if component == "" {
+			return fmt.Errorf("item.action extension %q: component is required", ext.ID)
+		}
+		if !isRelativeAssetPath(component) {
+			return fmt.Errorf("item.action extension %q: component %q must be a relative asset path", ext.ID, ext.Component)
+		}
+		ext.Component = component
+	}
+	return nil
+}
+
+// isRelativeAssetPath reports whether p names a file inside the plugin's
+// assets directory without escaping it or smuggling URL syntax.
+func isRelativeAssetPath(p string) bool {
+	if strings.HasPrefix(p, "/") || strings.ContainsAny(p, "?#\\:") {
+		return false
+	}
+	for _, segment := range strings.Split(p, "/") {
+		if segment == "" || segment == "." || segment == ".." {
+			return false
+		}
+	}
+	return true
 }
 
 // normalizeEditorExtensions validates editor-provider extensions and defaults

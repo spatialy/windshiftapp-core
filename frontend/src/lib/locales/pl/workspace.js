@@ -403,6 +403,7 @@ export default {
     moveWorkspacePreviewError: 'Nie udało się utworzyć podglądu przeniesienia',
     moveWorkspaceError: 'Nie udało się przenieść elementu',
     mergeMenu: 'Scal duplikat z tym',
+    pluginActionPopupBlocked: 'Przeglądarka zablokowała wyskakujące okno. Zezwól na wyskakujące okna dla tej witryny i spróbuj ponownie.',
     mergeTitle: 'Scal duplikat z tym zgłoszeniem',
     mergeDuplicateLabel: 'Zgłoszenie duplikatu',
     mergeHelp: 'Wyszukaj zgłoszenie duplikatu. Jego komentarze, załączniki i wątek e-mail zostaną tu przeniesione, a duplikat pokaże link z powrotem do tego zgłoszenia.',

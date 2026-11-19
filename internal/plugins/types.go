@@ -70,6 +70,13 @@ type Extension struct {
 // comment APIs. See docs/durable-action-delivery.md for the bridge protocol.
 const ExtensionPointEditorMarkdown = "editor.markdown"
 
+// ExtensionPointItemAction adds an entry to a work item's actions menu. On
+// click the host opens the extension's component in a popup window at
+// /api/plugins/{name}/assets/{component}?item_id={id}. The plugin page reads
+// the item itself through the session-authenticated REST API, so the host
+// passes only the id and the page sees nothing the user could not already see.
+const ExtensionPointItemAction = "item.action"
+
 // Editor extension modes.
 const (
 	// EditorModeToggle lets the user opt into the provider from the editor

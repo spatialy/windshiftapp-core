@@ -391,6 +391,7 @@ export default {
     moveWorkspacePreviewError: 'Verplaatsingsvoorbeeld kon niet worden opgebouwd',
     moveWorkspaceError: 'Item kon niet worden verplaatst',
     mergeMenu: 'Duplicaat in dit samenvoegen',
+    pluginActionPopupBlocked: 'De browser heeft de pop-up geblokkeerd. Sta pop-ups toe voor deze site en probeer het opnieuw.',
     mergeTitle: 'Duplicaat in dit ticket samenvoegen',
     mergeDuplicateLabel: 'Duplicaat ticket',
     mergeHelp: 'Zoek het duplicaat-ticket. De reacties, bijlagen en e-mailthread worden hierheen verplaatst en het duplicaat toont een link terug naar dit ticket.',

@@ -391,6 +391,7 @@ export default {
     moveWorkspacePreviewError: 'Failed to build the move preview',
     moveWorkspaceError: 'Failed to move item',
     mergeMenu: 'Merge duplicate into this',
+    pluginActionPopupBlocked: 'The browser blocked the popup. Allow popups for this site and try again.',
     mergeTitle: 'Merge duplicate into this ticket',
     mergeDuplicateLabel: 'Duplicate ticket',
     mergeHelp: 'Search for the duplicate ticket. Its comments, attachments and email thread move here, and the duplicate shows a link back to this ticket.',

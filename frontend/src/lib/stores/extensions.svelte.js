@@ -2,6 +2,7 @@
 // Uses Svelte 5 runes for proper reactivity tracking
 
 export const EDITOR_MARKDOWN_POINT = 'editor.markdown';
+export const ITEM_ACTION_POINT = 'item.action';
 
 let extensionsData = $state({});
 // Single in-flight load shared by every consumer. The editor host mounts many
@@ -84,4 +85,29 @@ export function getEditorProviders(data, entityType) {
         !entityType || !extension.entityTypes?.length || extension.entityTypes.includes(entityType)
     )
     .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+}
+
+/**
+ * Get the plugin actions for a work item's actions menu, ordered by `order`.
+ *
+ * @param {object} data - The extensions data from the store
+ * @returns {Array} Ordered item actions
+ */
+export function getItemActions(data) {
+  return [...getExtensionsForPoint(data, ITEM_ACTION_POINT)].sort(
+    (a, b) => (a.order ?? 0) - (b.order ?? 0)
+  );
+}
+
+/**
+ * Build the asset URL an item action opens. The item id is the only context
+ * passed; the plugin page loads the item itself through the REST API.
+ *
+ * @param {{ pluginName: string, component: string }} action
+ * @param {number|string} itemId
+ * @returns {string} Logical (context-path-free) URL
+ */
+export function itemActionUrl(action, itemId) {
+  const component = String(action.component).split('/').map(encodeURIComponent).join('/');
+  return `/api/plugins/${encodeURIComponent(action.pluginName)}/assets/${component}?item_id=${encodeURIComponent(itemId)}`;
 }

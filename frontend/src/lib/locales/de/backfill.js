@@ -456,6 +456,7 @@ export default {
     "mergeHelp": "Suchen Sie das doppelte Ticket. Dessen Kommentare, Anhänge und E-Mail-Verlauf werden hierher verschoben, und das Duplikat zeigt einen Link zurück zu diesem Ticket.",
     "mergeDifferentRequester": "Diese Tickets haben unterschiedliche Anfragende. Die Kommentare des Duplikats werden hierher verschoben, aber als privat markiert; Dateien, E-Mail-Verlauf und Teilnehmende bleiben am Duplikat.",
     "mergeMenu": "Duplikat hierher zusammenführen",
+    "pluginActionPopupBlocked": "Der Browser hat das Popup blockiert. Erlauben Sie Popups für diese Website und versuchen Sie es erneut.",
     "mergeSelfError": "Ein Ticket kann nicht mit sich selbst zusammengeführt werden",
     "mergeSuccess": "Duplikat in dieses Ticket zusammengeführt",
     "mergeTitle": "Duplikat in dieses Ticket zusammenführen",

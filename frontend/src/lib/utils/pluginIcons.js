@@ -11,6 +11,7 @@ import IconKey from '@tabler/icons-svelte-runes/icons/key';
 import IconLink from '@tabler/icons-svelte-runes/icons/link';
 import IconLock from '@tabler/icons-svelte-runes/icons/lock';
 import IconPackage from '@tabler/icons-svelte-runes/icons/package';
+import IconPrinter from '@tabler/icons-svelte-runes/icons/printer';
 import IconPuzzle from '@tabler/icons-svelte-runes/icons/puzzle';
 import IconSettings from '@tabler/icons-svelte-runes/icons/settings';
 import IconShield from '@tabler/icons-svelte-runes/icons/shield';
@@ -37,6 +38,7 @@ const pluginIconMap = {
   'cloud-download': IconCloudDownload,
   link: IconLink,
   package: IconPackage,
+  printer: IconPrinter,
   shield: IconShield,
   eye: IconEye,
   'clipboard-list': IconClipboardList,
